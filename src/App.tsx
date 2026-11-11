@@ -1,11 +1,12 @@
 import './App.css'
+import {LoginForm} from '@/components/login-form';
 
 function App() {
   return (
     <>
-      how are you meri janeman
+      <LoginForm />;.
     </>
-  )
+  );
 }
 
 export default App
