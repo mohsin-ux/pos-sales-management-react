@@ -1,19 +1,19 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-page: #D1FAE5;
+  --color-page: #d1fae5;
   --color-header: #047857;
-  --color-rail: #A7F3D0;
-  --color-table: #ECFDF5;
+  --color-rail: #a7f3d0;
+  --color-table: #ecfdf5;
   --color-primary: #059669;
-  --color-charge: #F59E0B;
-  --color-charge-text: #451A03;
-  --color-text: #064E3B;
+  --color-charge: #f59e0b;
+  --color-charge-text: #451a03;
+  --color-text: #064e3b;
 }
 
 :root {
@@ -134,7 +134,6 @@
   }
   body {
     @apply bg-page text-text;
-    
   }
   html {
     @apply font-sans;

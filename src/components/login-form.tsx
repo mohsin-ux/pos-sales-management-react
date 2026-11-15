@@ -1,36 +1,21 @@
-import { useState, type FormEvent } from 'react';
-import { cn } from 'cn';
+import { useState, type SubmitEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
 import { authApi } from '@/lib/auth-api';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { type LoginRequest } from '@/lib/types';
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setIsSubmitting(true);
@@ -50,13 +35,12 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card className="w-100 ml-150 mt-40">
+    // <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className="flex justify-center items-center h-dvh">
+      <Card className="w-100 min-h-75">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardDescription>Enter your email below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -72,7 +56,6 @@ export function LoginForm({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
-                  required
                 />
               </Field>
               <Field>
@@ -93,7 +76,6 @@ export function LoginForm({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting}
-                  required
                 />
               </Field>
               <Field>
@@ -101,12 +83,6 @@ export function LoginForm({
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? 'Logging in...' : 'Login'}
                 </Button>
-                {/* <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription> */}
               </Field>
             </FieldGroup>
           </form>

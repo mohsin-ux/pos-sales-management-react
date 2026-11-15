@@ -1,11 +1,7 @@
 import axios, { type AxiosError } from 'axios';
 
 import { API_ENDPOINTS, ROUTES, STORAGE_KEYS } from '@/lib/constants';
-import {
-  type ApiErrorResponse,
-  type RefreshResponse,
-  type RetryConfig,
-} from '@/lib/types';
+import { type ApiErrorResponse, type RefreshResponse, type RetryConfig } from '@/lib/types';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '',
@@ -30,8 +26,7 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const url = original?.url ?? '';
     const isAuthEndpoint =
-      url.includes(API_ENDPOINTS.AUTH.LOGIN) ||
-      url.includes(API_ENDPOINTS.AUTH.REFRESH);
+      url.includes(API_ENDPOINTS.AUTH.LOGIN) || url.includes(API_ENDPOINTS.AUTH.REFRESH);
 
     if (status !== 401 || !original || original._retry || isAuthEndpoint) {
       return Promise.reject(error);
