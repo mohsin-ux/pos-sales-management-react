@@ -1,4 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, type SubmitEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,18 +11,34 @@ import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
 import { authApi } from '@/lib/auth-api';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { loginSchema } from '@/lib/schemas';
 import { type LoginRequest } from '@/lib/types';
 
 export function LoginForm() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const {
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm<LoginRequest>({ resolver: zodResolver(loginSchema) });
+
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setIsSubmitting(true);
+
+    setValue('email', email);
+    setValue('password', password);
+    const isValid = await trigger();
+    if (!isValid) {
+      setIsSubmitting(false);
+      return;
+    }
 
     const payload: LoginRequest = { email, password };
 
@@ -26,7 +46,8 @@ export function LoginForm() {
       const tokens = await authApi.login(payload);
       localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
       localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
-      window.location.href = ROUTES.HOME;
+      toast.success('Logged in successfully');
+      navigate(ROUTES.HOME, { replace: true });
     } catch (err) {
       setError(getApiErrorMessage(err));
     } finally {
@@ -57,6 +78,7 @@ export function LoginForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isSubmitting}
                 />
+                <FieldError>{errors.email?.message}</FieldError>
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -77,6 +99,7 @@ export function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting}
                 />
+                <FieldError>{errors.password?.message}</FieldError>
               </Field>
               <Field>
                 <FieldError>{error}</FieldError>
