@@ -14,16 +14,15 @@ import { authApi } from '@/lib/auth-api';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { loginSchema } from '@/lib/schemas';
 import { type LoginRequest, type LoginResponse } from '@/lib/types';
+import { useAuthStore } from '@/store/auth-store';
 
 export function LoginForm() {
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
   const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useMutation<LoginResponse, Error, LoginRequest>({
-    mutationFn: async (payload) => {
-      const data = await authApi.login(payload);
-      return data;
-    },
+    mutationFn: (payload) => authApi.login(payload),
   });
 
   const isPending = loginMutation.isPending;
@@ -40,9 +39,10 @@ export function LoginForm() {
   const onSubmit = (payload: LoginRequest) => {
     loginMutation.mutate(payload, {
       onSuccess: (data) => {
+        setUser(data.user);
         localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, data.access_token);
         localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refresh_token);
-        
+
         toast.success('Logged in successfully');
         navigate(ROUTES.HOME, { replace: true });
       },
