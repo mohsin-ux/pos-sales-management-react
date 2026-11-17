@@ -1,7 +1,12 @@
 import axios, { type AxiosError } from 'axios';
 
 import { API_ENDPOINTS, ROUTES, STORAGE_KEYS } from '@/lib/constants';
-import { type ApiErrorResponse, type RefreshResponse, type RetryConfig } from '@/lib/types';
+import {
+  type ApiErrorResponse,
+  type ApiResponse,
+  type RefreshResponse,
+  type RetryConfig,
+} from '@/lib/types';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '',
@@ -36,7 +41,7 @@ api.interceptors.response.use(
 
     try {
       const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-      const res = await axios.post<RefreshResponse>(
+      const { data } = await axios.post<ApiResponse<RefreshResponse>>(
         API_ENDPOINTS.AUTH.REFRESH,
         {
           refreshToken,
@@ -46,10 +51,10 @@ api.interceptors.response.use(
         },
       );
 
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, res.data.accessToken);
-      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, res.data.refreshToken);
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, data.data.access_token);
+      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.data.refresh_token);
 
-      original.headers.Authorization = `Bearer ${res.data.accessToken}`;
+      original.headers.Authorization = `Bearer ${data.data.access_token}`;
       return api(original);
     } catch {
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
