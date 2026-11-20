@@ -4,6 +4,7 @@ import { RequireAuth } from '@/components/require-auth';
 import { LoginForm } from '@/pages/login-form';
 import { ROUTES } from '@/lib/constants';
 import { HomePage } from '@/pages/home';
+import { ProductsPage } from '@/pages/products';
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.HOME,
         element: <HomePage />,
+      },
+      {
+        path: ROUTES.PRODUCTS,
+        element: <ProductsPage />,
       },
     ],
   },

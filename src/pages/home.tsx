@@ -12,6 +12,12 @@ export function HomePage() {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <p className="text-sm text-muted-foreground">This is a placeholder page.</p>
+        <Link
+          to={ROUTES.PRODUCTS}
+          className="text-sm text-primary underline-offset-4 hover:underline"
+        >
+          View products
+        </Link>
         <Link to={ROUTES.LOGIN} className="text-sm text-primary underline-offset-4 hover:underline">
           Go to login
         </Link>

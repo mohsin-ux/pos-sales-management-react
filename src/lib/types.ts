@@ -57,3 +57,24 @@ export interface LoginRequest {
   email: string;
   password: string;
 }
+
+export interface Product {
+  id: string;
+  storeId: string;
+  name: string;
+  sku: string;
+  salePrice: string;
+  stockQuantity: number;
+  createdBy: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProductRequest {
+  name: string;
+  sku: string;
+  salePrice: string;
+  stockQuantity: number;
+}
+
+export type UpdateProductRequest = Partial<CreateProductRequest>;

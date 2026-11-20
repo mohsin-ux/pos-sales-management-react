@@ -4,6 +4,10 @@ export const API_ENDPOINTS = {
     REFRESH: '/auth/refresh',
     ME: '/auth/me',
   },
+  PRODUCTS: {
+    LIST: '/products',
+    DETAIL: (id: string) => `/products/${id}`,
+  },
 } as const;
 
 export const STORAGE_KEYS = {
@@ -14,4 +18,5 @@ export const STORAGE_KEYS = {
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  PRODUCTS: '/products',
 } as const;
