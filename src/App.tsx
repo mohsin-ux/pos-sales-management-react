@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router/dom';
 
+import { CurrentUserLoader } from '@/components/current-user-loader';
 import { Toaster } from '@/components/ui/sonner';
 import { queryClient } from '@/lib/query-client';
 import { router } from '@/router';
@@ -8,7 +9,9 @@ import { router } from '@/router';
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <CurrentUserLoader>
+        <RouterProvider router={router} />
+      </CurrentUserLoader>
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );

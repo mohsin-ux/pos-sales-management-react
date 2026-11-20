@@ -5,6 +5,7 @@ import {
   type LoginRequest,
   type LoginResponse,
   type RefreshResponse,
+  type User,
 } from '@/lib/types';
 
 export const authApi = {
@@ -12,6 +13,10 @@ export const authApi = {
     const { data } = await api.post<ApiResponse<LoginResponse>>(API_ENDPOINTS.AUTH.LOGIN, payload);
     console.log('it is the data comes from the backend', data.data);
 
+    return data.data;
+  },
+  async me(): Promise<User> {
+    const { data } = await api.get<ApiResponse<User>>(API_ENDPOINTS.AUTH.ME);
     return data.data;
   },
   async refresh(refreshToken: string): Promise<RefreshResponse> {
