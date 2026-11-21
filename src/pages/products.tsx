@@ -1,16 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
 
+import { ProductTable } from '@/components/product-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { getApiErrorMessage } from '@/lib/api';
 import { ROUTES } from '@/lib/constants';
 import { productApi } from '@/lib/product-api';
@@ -35,7 +28,7 @@ export function ProductsPage() {
           <CardDescription>All products available in your store.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {true && <p className="text-sm text-muted-foreground">Loading products...</p>}
+          {isLoading && <p className="text-sm text-muted-foreground">Loading products...</p>}
 
           {isError && (
             <div className="flex flex-col items-start gap-3">
@@ -51,28 +44,7 @@ export function ProductsPage() {
           )}
 
           {!isLoading && !isError && products && products.length > 0 && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead>Sale price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Created</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.sku}</TableCell>
-                    <TableCell>{Number(product.salePrice).toFixed(2)}</TableCell>
-                    <TableCell>{product.stockQuantity}</TableCell>
-                    <TableCell>{new Date(product.createdAt).toLocaleDateString()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <ProductTable products={products} />
           )}
 
           <Link

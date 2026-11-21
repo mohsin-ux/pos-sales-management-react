@@ -11,8 +11,6 @@ import {
 export const authApi = {
   async login(payload: LoginRequest): Promise<LoginResponse> {
     const { data } = await api.post<ApiResponse<LoginResponse>>(API_ENDPOINTS.AUTH.LOGIN, payload);
-    console.log('it is the data comes from the backend', data.data);
-
     return data.data;
   },
   async me(): Promise<User> {
