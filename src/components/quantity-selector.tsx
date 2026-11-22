@@ -31,7 +31,7 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
         aria-label={`Quantity of ${label}`}
-        className="h-7 w-14 text-center"
+        className="h-7 w-14 text-center border border border-black"
       />
       <Button
         type="button"

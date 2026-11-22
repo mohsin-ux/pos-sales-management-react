@@ -70,6 +70,12 @@ export function HomePage() {
     );
   };
 
+  const totalQuantity = selectedProducts.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = selectedProducts.reduce(
+    (sum, item) => sum + Number(item.product.salePrice) * item.quantity,
+    0,
+  );
+
   return (
     <div className="mx-auto mt-10 w-full max-w-5xl px-4">
       <Card>
@@ -111,7 +117,7 @@ export function HomePage() {
                 role="listbox"
                 aria-label="Product suggestions"
                 aria-multiselectable="true"
-                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md"
+                className="absolute z-10 mt-1 w-full overflow-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md"
               >
                 {suggestions.map((product) => (
                   <button
@@ -187,6 +193,19 @@ export function HomePage() {
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemove}
                 />
+              </div>
+              <div className="flex flex-wrap justify-end gap-x-6 gap-y-1 text-sm text-muted-foreground">
+                <span>
+                  Products:{' '}
+                  <span className="font-medium text-foreground">{selectedProducts.length}</span>
+                </span>
+                <span>
+                  Quantity: <span className="font-medium text-foreground">{totalQuantity}</span>
+                </span>
+                <span>
+                  Total:{' '}
+                  <span className="font-medium text-foreground">{totalPrice.toFixed(2)}</span>
+                </span>
               </div>
             </div>
           )}
