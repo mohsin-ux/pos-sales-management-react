@@ -78,3 +78,8 @@ export interface CreateProductRequest {
 }
 
 export type UpdateProductRequest = Partial<CreateProductRequest>;
+
+export interface SelectedProduct {
+  product: Product;
+  quantity: number;
+}
