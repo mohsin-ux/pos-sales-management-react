@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 
-import { QuantityStepper } from '@/components/quantity-stepper';
+import { QuantitySelector } from '@/components/quantity-selector';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -53,7 +53,7 @@ export function ProductTable({
               <TableCell>{Number(product.salePrice).toFixed(2)}</TableCell>
               {showQuantity && (
                 <TableCell>
-                  <QuantityStepper
+                  <QuantitySelector
                     value={quantity}
                     max={maxQuantity}
                     label={product.name}

@@ -3,14 +3,14 @@ import { Minus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-interface QuantityStepperProps {
+interface QuantitySelectorProps {
   value: number;
   max: number;
   label: string;
   onChange: (value: number) => void;
 }
 
-export function QuantityStepper({ value, max, label, onChange }: QuantityStepperProps) {
+export function QuantitySelector({ value, max, label, onChange }: QuantitySelectorProps) {
   return (
     <div className="flex items-center gap-1">
       <Button
