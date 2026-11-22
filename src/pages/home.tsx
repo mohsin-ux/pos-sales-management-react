@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { ConfirmSaleDialog } from '@/components/confirm-sale-dialog';
 import { ProductTable } from '@/components/product-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,7 @@ export function HomePage() {
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [showProductList, setShowProductList] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   /**
    * fetching all the products
@@ -89,9 +91,11 @@ export function HomePage() {
   const createSaleMutation = useMutation({
     mutationFn: (payload: CreateSaleRequest) => saleApi.create(payload),
     onSuccess: () => {
-      toast.success('Sale created successfully');
+      setIsConfirmOpen(false);
+      toastname.success('Sale created successfully');
       setSelectedProducts([]);
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      setSearch('')
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError));
@@ -241,10 +245,9 @@ export function HomePage() {
               <Button
                 type="button"
                 className="self-end cursor-pointer"
-                onClick={handleCreateSale}
-                disabled={createSaleMutation.isPending}
+                onClick={() => setIsConfirmOpen(true)}
               >
-                {createSaleMutation.isPending ? 'Creating sale...' : 'Create sale'}
+                Create sale
               </Button>
             </div>
           )}
@@ -276,6 +279,14 @@ export function HomePage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmSaleDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        items={selectedProducts}
+        isPending={createSaleMutation.isPending}
+        onConfirm={handleCreateSale}
+      />
     </div>
   );
 }

@@ -20,6 +20,7 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         aria-label={`Decrease quantity of ${label}`}
         onClick={() => onChange(value - 1)}
         disabled={value <= 1}
+        className='cursor-pointer'
       >
         <Minus />
       </Button>
@@ -40,6 +41,7 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         aria-label={`Increase quantity of ${label}`}
         onClick={() => onChange(value + 1)}
         disabled={value >= max}
+        className='cursor-pointer'
       >
         <Plus />
       </Button>
