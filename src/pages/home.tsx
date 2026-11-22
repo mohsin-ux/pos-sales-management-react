@@ -1,20 +1,32 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
 import { ConfirmSaleDialog } from '@/components/confirm-sale-dialog';
 import { ProductTable } from '@/components/product-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
+import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { productApi } from '@/lib/product-api';
 import { saleApi } from '@/lib/sale-api';
 import { type CreateSaleRequest, type Product, type SelectedProduct } from '@/lib/types';
+import { useAuthStore } from '@/store/auth-store';
 
 export function HomePage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const clearUser = useAuthStore((state) => state.clearUser);
   const [search, setSearch] = useState('');
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
@@ -92,10 +104,10 @@ export function HomePage() {
     mutationFn: (payload: CreateSaleRequest) => saleApi.create(payload),
     onSuccess: () => {
       setIsConfirmOpen(false);
-      toastname.success('Sale created successfully');
+      toast.success('Sale created successfully');
       setSelectedProducts([]);
       queryClient.invalidateQueries({ queryKey: ['products'] });
-      setSearch('')
+      setSearch('');
     },
     onError: (mutationError) => {
       toast.error(getApiErrorMessage(mutationError));
@@ -111,12 +123,31 @@ export function HomePage() {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    clearUser();
+    queryClient.clear();
+    navigate(ROUTES.LOGIN, { replace: true });
+  };
+
   return (
     <div className="mx-auto my-10 w-full max-w-5xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>Dashboard</CardTitle>
           <CardDescription>Search for products by name and select one or more.</CardDescription>
+          <CardAction>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="relative">
@@ -256,7 +287,7 @@ export function HomePage() {
             type="button"
             variant="outline"
             onClick={() => setShowProductList((current) => !current)}
-            className='cursor-pointer'
+            className="cursor-pointer"
           >
             {showProductList ? 'Hide full product list' : 'View full product list'}
           </Button>
