@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { ProductTable } from '@/components/product-table';
 import { Button } from '@/components/ui/button';
@@ -8,14 +9,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
 import { productApi } from '@/lib/product-api';
-import { type Product, type SelectedProduct } from '@/lib/types';
+import { saleApi } from '@/lib/sale-api';
+import { type CreateSaleRequest, type Product, type SelectedProduct } from '@/lib/types';
 
 export function HomePage() {
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [showProductList, setShowProductList] = useState(false);
 
+  /**
+   * fetching all the products
+   */
   const {
     data: products,
     isLoading,
@@ -76,8 +82,33 @@ export function HomePage() {
     0,
   );
 
+  /**
+   * create sale call api
+   */
+
+  const createSaleMutation = useMutation({
+    mutationFn: (payload: CreateSaleRequest) => saleApi.create(payload),
+    onSuccess: () => {
+      toast.success('Sale created successfully');
+      setSelectedProducts([]);
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (mutationError) => {
+      toast.error(getApiErrorMessage(mutationError));
+    },
+  });
+
+  const handleCreateSale = () => {
+    createSaleMutation.mutate({
+      items: selectedProducts.map(({ product, quantity }) => ({
+        productId: product.id,
+        quantity,
+      })),
+    });
+  };
+
   return (
-    <div className="mx-auto mt-10 w-full max-w-5xl px-4">
+    <div className="mx-auto my-10 w-full max-w-5xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>Dashboard</CardTitle>
@@ -207,24 +238,25 @@ export function HomePage() {
                   <span className="font-medium text-foreground">{totalPrice.toFixed(2)}</span>
                 </span>
               </div>
+              <Button
+                type="button"
+                className="self-end cursor-pointer"
+                onClick={handleCreateSale}
+                disabled={createSaleMutation.isPending}
+              >
+                {createSaleMutation.isPending ? 'Creating sale...' : 'Create sale'}
+              </Button>
             </div>
           )}
 
-          {/* <div className="flex flex-col gap-2"> */}
           <Button
             type="button"
             variant="outline"
             onClick={() => setShowProductList((current) => !current)}
+            className='cursor-pointer'
           >
             {showProductList ? 'Hide full product list' : 'View full product list'}
           </Button>
-          {/* <Link
-              to={ROUTES.LOGIN}
-              className="text-sm text-primary underline-offset-4 hover:underline"
-            >
-              Go to login
-            </Link> */}
-          {/* </div> */}
 
           {showProductList && (
             <div className="flex flex-col gap-3 border-t pt-4">

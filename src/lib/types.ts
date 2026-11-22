@@ -83,3 +83,12 @@ export interface SelectedProduct {
   product: Product;
   quantity: number;
 }
+
+export interface SaleItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface CreateSaleRequest {
+  items: SaleItem[];
+}

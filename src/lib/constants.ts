@@ -8,6 +8,9 @@ export const API_ENDPOINTS = {
     LIST: '/products',
     DETAIL: (id: string) => `/products/${id}`,
   },
+  SALES: {
+    CREATE: '/sales',
+  },
 } as const;
 
 export const STORAGE_KEYS = {
