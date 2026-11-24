@@ -59,6 +59,7 @@ export function HomePage() {
     .slice(0, 8);
 
   const handleSelect = (product: Product) => {
+    if (!isSuggestionsOpen) return;
     setSelectedProducts((current) =>
       current.some((selected) => selected.product.id === product.id)
         ? current
