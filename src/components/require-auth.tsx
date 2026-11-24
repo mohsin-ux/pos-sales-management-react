@@ -1,7 +1,8 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { ROUTES } from '@/lib/constants';
+import { useAuthStore } from '@/store/auth-store';
 
 /**
  * Guards protected routes. Unauthenticated users (no access token) or users
@@ -10,9 +11,10 @@ import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 export function RequireAuth() {
   const location = useLocation();
   const { isError } = useCurrentUser();
-  const hasAccessToken = Boolean(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN));
 
-  if (!hasAccessToken || isError) {
+  const user = useAuthStore((state) => state.user);
+
+  if (isError || !user) {
     return <Navigate to={ROUTES.LOGIN} replace state={{ from: location }} />;
   }
 

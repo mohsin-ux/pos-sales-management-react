@@ -17,7 +17,8 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { authApi } from '@/lib/auth-api';
+import { ROUTES } from '@/lib/constants';
 import { productApi } from '@/lib/product-api';
 import { saleApi } from '@/lib/sale-api';
 import { type CreateSaleRequest, type Product, type SelectedProduct } from '@/lib/types';
@@ -123,13 +124,14 @@ export function HomePage() {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-    clearUser();
-    queryClient.clear();
-    navigate(ROUTES.LOGIN, { replace: true });
-  };
+  const logoutMutation = useMutation({
+    mutationFn: () => authApi.logout(),
+    onSettled: async () => {
+      clearUser();
+      queryClient.clear();
+      navigate(ROUTES.LOGIN, { replace: true });
+    },
+  });
 
   return (
     <div className="mx-auto my-10 w-full max-w-5xl px-4">
@@ -143,9 +145,10 @@ export function HomePage() {
               variant="outline"
               size="sm"
               className="cursor-pointer"
-              onClick={handleLogout}
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
             >
-              Logout
+              {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
             </Button>
           </CardAction>
         </CardHeader>

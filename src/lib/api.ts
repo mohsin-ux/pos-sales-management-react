@@ -1,6 +1,6 @@
 import axios, { type AxiosError } from 'axios';
 
-import { API_ENDPOINTS, ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { API_ENDPOINTS, ROUTES } from '@/lib/constants';
 import {
   type ApiErrorResponse,
   type ApiResponse,
@@ -14,14 +14,7 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 30_000,
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  withCredentials: true, // <-- Tells Axios to send cookies automatically
 });
 
 api.interceptors.response.use(
@@ -40,25 +33,17 @@ api.interceptors.response.use(
     original._retry = true;
 
     try {
-      const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-      const { data } = await axios.post<ApiResponse<RefreshResponse>>(
+      await axios.post<ApiResponse<RefreshResponse>>(
         API_ENDPOINTS.AUTH.REFRESH,
-        {
-          refreshToken,
-        },
+        {},
         {
           baseURL: api.defaults.baseURL,
+          withCredentials: true,
         },
       );
 
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, data.data.access_token);
-      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.data.refresh_token);
-
-      original.headers.Authorization = `Bearer ${data.data.access_token}`;
       return api(original);
     } catch {
-      localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       if (window.location.pathname !== ROUTES.LOGIN) {
         window.location.href = ROUTES.LOGIN;
       }

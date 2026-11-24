@@ -11,7 +11,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/lib/api';
 import { authApi } from '@/lib/auth-api';
-import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
+import { ROUTES } from '@/lib/constants';
 import { loginSchema } from '@/lib/schemas';
 import { type LoginRequest, type LoginResponse } from '@/lib/types';
 import { useAuthStore } from '@/store/auth-store';
@@ -40,8 +40,6 @@ export function LoginForm() {
     loginMutation.mutate(payload, {
       onSuccess: (data) => {
         setUser(data.user);
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, data.access_token);
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refresh_token);
 
         toast.success('Logged in successfully');
         navigate(ROUTES.HOME, { replace: true });

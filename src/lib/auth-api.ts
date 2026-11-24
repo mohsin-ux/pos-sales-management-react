@@ -17,6 +17,9 @@ export const authApi = {
     const { data } = await api.get<ApiResponse<User>>(API_ENDPOINTS.AUTH.ME);
     return data.data;
   },
+  async logout(): Promise<void> {
+    await api.post(API_ENDPOINTS.AUTH.LOGOUT);
+  },
   async refresh(refreshToken: string): Promise<RefreshResponse> {
     const { data } = await api.post<ApiResponse<RefreshResponse>>(API_ENDPOINTS.AUTH.REFRESH, {
       refreshToken,
