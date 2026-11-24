@@ -29,8 +29,8 @@ export function ProductTable({
 
   return (
     <Table>
-      <TableHeader>
-        <TableRow>
+      <TableHeader className="bg-emerald-100 [&_th]:text-[11px] [&_th]:font-semibold [&_th]:tracking-wide [&_th]:text-emerald-700 [&_th]:uppercase">
+        <TableRow className="border-emerald-100 hover:bg-transparent">
           <TableHead>Name</TableHead>
           <TableHead>SKU</TableHead>
           <TableHead>Sale price</TableHead>
@@ -47,10 +47,10 @@ export function ProductTable({
           const maxQuantity = Math.max(1, product.stockQuantity);
 
           return (
-            <TableRow key={product.id}>
-              <TableCell className="font-medium">{product.name}</TableCell>
-              <TableCell>{product.sku}</TableCell>
-              <TableCell>{Number(product.salePrice).toFixed(2)}</TableCell>
+            <TableRow key={product.id} className="border-emerald-100 hover:bg-emerald-50/60">
+              <TableCell className="font-semibold text-emerald-950">{product.name}</TableCell>
+              <TableCell className="text-muted-foreground">{product.sku}</TableCell>
+              <TableCell className="font-medium">{Number(product.salePrice).toFixed(2)}</TableCell>
               {showQuantity && (
                 <TableCell>
                   <QuantitySelector
@@ -62,16 +62,23 @@ export function ProductTable({
                 </TableCell>
               )}
               {showQuantity && (
-                <TableCell>{(Number(product.salePrice) * quantity).toFixed(2)}</TableCell>
+                <TableCell className="font-medium">
+                  {(Number(product.salePrice) * quantity).toFixed(2)}
+                </TableCell>
               )}
-              <TableCell>{product.stockQuantity}</TableCell>
-              <TableCell>{new Date(product.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell className="font-semibold text-emerald-800">
+                {product.stockQuantity}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {new Date(product.createdAt).toLocaleDateString()}
+              </TableCell>
               {onRemove && (
                 <TableCell className="text-right">
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="destructive"
                     size="icon-xs"
+                    className="cursor-pointer"
                     aria-label={`Remove ${product.name}`}
                     onClick={() => onRemove(product.id)}
                   >

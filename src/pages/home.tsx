@@ -135,10 +135,14 @@ export function HomePage() {
 
   return (
     <div className="mx-auto my-10 w-full max-w-5xl px-4">
-      <Card>
+      <Card className="bg-white shadow-sm ring-emerald-100">
         <CardHeader>
-          <CardTitle>Dashboard</CardTitle>
-          <CardDescription>Search for products by name and select one or more.</CardDescription>
+          <CardTitle className="flex items-center gap-2 text-3xl font-bold tracking-tight text-emerald-950">
+            Quick POS
+          </CardTitle>
+          <CardDescription className="text-base text-emerald-900/60">
+            Search for products by name and select one or more.
+          </CardDescription>
           <CardAction>
             <Button
               type="button"
@@ -154,7 +158,7 @@ export function HomePage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="relative">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-emerald-800" />
             <Input
               type="search"
               value={search}
@@ -177,7 +181,7 @@ export function HomePage() {
               aria-expanded={isSuggestionsOpen && suggestions.length > 0}
               aria-controls="product-suggestions"
               autoComplete="off"
-              className="pl-8"
+              className="h-11 rounded-xl border-emerald-200 bg-emerald-50/70 pl-9 text-emerald-950 placeholder:text-emerald-900/40 focus-visible:border-emerald-400 focus-visible:ring-emerald-500/20"
             />
 
             {isSuggestionsOpen && suggestions.length > 0 && (
@@ -186,7 +190,7 @@ export function HomePage() {
                 role="listbox"
                 aria-label="Product suggestions"
                 aria-multiselectable="true"
-                className="absolute z-10 mt-1 w-full overflow-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md"
+                className="absolute z-10 mt-1 w-full overflow-auto rounded-xl border border-emerald-100 bg-white p-1 text-popover-foreground shadow-lg"
               >
                 {suggestions.map((product) => (
                   <button
@@ -198,7 +202,7 @@ export function HomePage() {
                       event.preventDefault();
                       handleSelect(product);
                     }}
-                    className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted"
+                    className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-emerald-50"
                   >
                     <span className="font-medium">{product.name}</span>
                     <span className="text-xs text-muted-foreground">{product.sku}</span>
@@ -248,12 +252,19 @@ export function HomePage() {
           {!isLoading && !isError && selectedProducts.length > 0 && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">Selected products ({selectedProducts.length})</p>
-                <Button variant="ghost" size="sm" onClick={() => setSelectedProducts([])}>
+                <h2 className="text-lg font-semibold text-emerald-950">
+                  Selected products ({selectedProducts.length})
+                </h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="cursor-pointer text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => setSelectedProducts([])}
+                >
                   Clear all
                 </Button>
               </div>
-              <div className="bg-red-100 p-1 rounded-lg">
+              <div className="overflow-hidden rounded-xl border border-emerald-100 bg-emerald-50/40">
                 <ProductTable
                   products={selectedProducts.map((selected) => selected.product)}
                   quantities={Object.fromEntries(
@@ -263,26 +274,38 @@ export function HomePage() {
                   onRemove={handleRemove}
                 />
               </div>
-              <div className="flex flex-wrap justify-end gap-x-6 gap-y-1 text-sm text-muted-foreground">
-                <span>
-                  Products:{' '}
-                  <span className="font-medium text-foreground">{selectedProducts.length}</span>
-                </span>
-                <span>
-                  Quantity: <span className="font-medium text-foreground">{totalQuantity}</span>
-                </span>
-                <span>
-                  Total:{' '}
-                  <span className="font-medium text-foreground">{totalPrice.toFixed(2)}</span>
-                </span>
+              <div className="flex flex-wrap items-end justify-end gap-x-8 gap-y-4">
+                <div className="flex flex-col items-end">
+                  <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                    Products
+                  </span>
+                  <span className="text-lg font-semibold text-emerald-950">
+                    {selectedProducts.length}
+                  </span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                    Quantity
+                  </span>
+                  <span className="text-lg font-semibold text-emerald-950">{totalQuantity}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                    Total
+                  </span>
+                  <span className="text-2xl font-bold text-emerald-800">
+                    <span className="text-black font-semibold text-lg">Rs.</span>{' '}
+                    {totalPrice.toFixed(2)}
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  className="h-11 cursor-pointer rounded-xl px-6 font-semibold shadow-sm"
+                  onClick={() => setIsConfirmOpen(true)}
+                >
+                  Create sale
+                </Button>
               </div>
-              <Button
-                type="button"
-                className="self-end cursor-pointer"
-                onClick={() => setIsConfirmOpen(true)}
-              >
-                Create sale
-              </Button>
             </div>
           )}
 
@@ -290,14 +313,14 @@ export function HomePage() {
             type="button"
             variant="outline"
             onClick={() => setShowProductList((current) => !current)}
-            className="cursor-pointer"
+            className="h-10 w-full cursor-pointer rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
           >
             {showProductList ? 'Hide full product list' : 'View full product list'}
           </Button>
 
           {showProductList && (
-            <div className="flex flex-col gap-3 border-t pt-4">
-              <p className="text-sm font-medium">All products</p>
+            <div className="flex flex-col gap-3 border-t border-emerald-100 pt-4">
+              <p className="text-lg font-semibold text-emerald-950">All products</p>
               {products && products.length > 0 ? (
                 <ProductTable products={products} />
               ) : (

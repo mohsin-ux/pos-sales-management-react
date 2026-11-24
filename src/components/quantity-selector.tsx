@@ -20,7 +20,11 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         aria-label={`Decrease quantity of ${label}`}
         onClick={() => onChange(value - 1)}
         disabled={value <= 1}
-        className='cursor-pointer'
+        className={
+          value <= 1
+            ? 'disabled:pointer-events-auto disabled:cursor-not-allowed'
+            : 'cursor-pointer border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800'
+        }
       >
         <Minus />
       </Button>
@@ -32,7 +36,7 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
         aria-label={`Quantity of ${label}`}
-        className="h-7 w-14 text-center border border border-black"
+        className="h-7 w-14 rounded-md border border-emerald-200 bg-white text-center font-medium text-emerald-900"
       />
       <Button
         type="button"
@@ -41,7 +45,11 @@ export function QuantitySelector({ value, max, label, onChange }: QuantitySelect
         aria-label={`Increase quantity of ${label}`}
         onClick={() => onChange(value + 1)}
         disabled={value >= max}
-        className='cursor-pointer'
+        className={
+          value >= max
+            ? 'disabled:pointer-events-auto disabled:cursor-not-allowed'
+            : 'cursor-pointer border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800'
+        }
       >
         <Plus />
       </Button>
